@@ -6,6 +6,7 @@ import tensorflow as tf
 import os
 
 import rlcard
+from rlcard import models
 from rlcard.agents.nfsp_agent import NFSPAgent
 from rlcard.agents.dqn_agent import DQNAgent
 from rlcard.agents.cfr_agent import CFRAgent
@@ -94,7 +95,8 @@ def load_cfr_leduc_agent(model_path):
 
 # Evaluate the performance.
 # random_agent = RandomAgent(env.action_num)
-nfsp_model_path = os.path.join(rlcard.__path__[0], 'models/pretrained/leduc_holdem_nfsp')
+# nfsp_model_path = os.path.join(rlcard.__path__[0], 'models/pretrained/leduc_holdem_nfsp')
+nfsp_model_path = 'models/leduc_holdem_nfsp'
 nfsp_agent = load_nfsp_leduc_agent(nfsp_model_path)
 print("loaded NFSP leduc agent")
 
@@ -103,6 +105,9 @@ print("loaded DQN leduc agent")
 
 cfr_agent = load_cfr_leduc_agent('models/cfr_model')
 print("loaded CFR leduc agent")
+
+rule_based_agent = models.load('leduc-holdem-rule-v2')
+print("loaded Leduc Rule Based Agent")
 
 print('\nNFSP vs DQN')
 env1 = rlcard.make('leduc-holdem')
