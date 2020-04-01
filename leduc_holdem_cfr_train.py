@@ -4,6 +4,7 @@ import numpy as np
 
 import rlcard
 from rlcard.agents.cfr_agent import CFRAgent
+from rlcard.agents.random_agent import RandomAgent
 from rlcard import models
 from rlcard.utils.utils import set_global_seed, tournament
 from rlcard.utils.logger import Logger
@@ -16,7 +17,7 @@ eval_env = rlcard.make('leduc-holdem')
 evaluate_every = 100
 save_plot_every = 1000
 evaluate_num = 10000
-episode_num = 10000
+episode_num = 100000
 
 # The paths for saving the logs and learning curves
 log_dir = './experiments/leduc_holdem_cfr_result/'
@@ -29,7 +30,9 @@ agent = CFRAgent(env)
 agent.load()  # If we have saved model, we first load the model
 
 # Evaluate CFR against pre-trained NFSP
-eval_env.set_agents([agent, models.load('leduc-holdem-nfsp').agents[0]])
+# eval_env.set_agents([agent, models.load('leduc-holdem-nfsp').agents[0]])
+random_agent = RandomAgent(action_num=eval_env.action_num)
+eval_env.set_agents([agent, RandomAgent(action_num=eval_env.action_num)])
 
 # Init a Logger to plot the learning curve
 logger = Logger(log_dir)
