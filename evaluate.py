@@ -106,8 +106,29 @@ print("loaded DQN leduc agent")
 cfr_agent = load_cfr_leduc_agent('models/cfr_model')
 print("loaded CFR leduc agent")
 
-rule_based_agent = models.load('leduc-holdem-rule-v2')
+rule_based_agent = models.load('leduc-holdem-rule-v1').rule_agents[0]
 print("loaded Leduc Rule Based Agent")
+
+print('\nNFSP vs RuleBased')
+env4 = rlcard.make('leduc-holdem')
+env4.set_agents([nfsp_agent, rule_based_agent])
+reward_nfsp, reward_rule_based = tournament(env4, evaluate_num)
+print('Reward NFSP: ', reward_nfsp)
+print('Reward RuleBased: ', reward_rule_based)
+
+print('\nDQN vs RuleBased')
+env5 = rlcard.make('leduc-holdem')
+env5.set_agents([dqn_agent, rule_based_agent])
+reward_dqn, reward_rule_based = tournament(env5, evaluate_num)
+print('Reward DQN: ', reward_dqn)
+print('Reward RuleBased: ', reward_rule_based)
+
+print('\nCFR vs RuleBased')
+env6 = rlcard.make('leduc-holdem')
+env6.set_agents([cfr_agent, rule_based_agent])
+reward_cfr, reward_rule_based = tournament(env6, evaluate_num)
+print('Reward CFR: ', reward_cfr)
+print('Reward RuleBased: ', reward_rule_based)
 
 print('\nNFSP vs DQN')
 env1 = rlcard.make('leduc-holdem')
