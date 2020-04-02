@@ -28,7 +28,7 @@ memory_init_size = 1000
 train_every = 1
 
 # The paths for saving the logs and learning curves
-log_dir = './experiments/leduc_holdem_dqn_result/'
+log_dir = './experiments/leduc_holdem_dqn_rules_result/'
 
 # Set a global seed
 set_global_seed(0)
