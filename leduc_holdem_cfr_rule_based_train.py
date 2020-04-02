@@ -6,6 +6,7 @@ import rlcard
 from rlcard.agents.cfr_agent import CFRAgent
 from rlcard.agents.random_agent import RandomAgent
 from rlcard import models
+from rlcard.models.leducholdem_rule_models import LeducHoldemRuleAgentV1
 from rlcard.utils.utils import set_global_seed, tournament
 from rlcard.utils.logger import Logger
 
@@ -20,8 +21,9 @@ evaluate_num = 10000
 episode_num = 100000
 
 # The paths for saving the logs and learning curves
-log_dir = './experiments/leduc_holdem_cfr_result/'
+# log_dir = '.drive/My \Drive/Masters/experiments/leduc_holdem_cfr_result/'
 
+log_dir = './experiments/leduc_holdem_cfr_result/'
 # Set a global seed
 set_global_seed(0)
 
@@ -29,10 +31,11 @@ set_global_seed(0)
 agent = CFRAgent(env)
 agent.load()  # If we have saved model, we first load the model
 
-# Evaluate CFR against random agent
+# Evaluate CFR against rule-based agent
 # eval_env.set_agents([agent, models.load('leduc-holdem-nfsp').agents[0]])
-random_agent = RandomAgent(action_num=eval_env.action_num)
-eval_env.set_agents([agent, RandomAgent(action_num=eval_env.action_num)])
+# random_agent = RandomAgent(action_num=eval_env.action_num)
+rule_based_agent = LeducHoldemRuleAgentV1()
+eval_env.set_agents([agent, rule_based_agent])
 
 # Init a Logger to plot the learning curve
 logger = Logger(log_dir)
