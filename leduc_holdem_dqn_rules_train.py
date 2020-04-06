@@ -8,7 +8,7 @@ import rlcard
 from rlcard import models
 from rlcard.agents.dqn_agent import DQNAgent
 from rlcard.agents.random_agent import RandomAgent
-from rlcard.models.leducholdem_rule_models import LeducHoldemRuleAgentV2
+from rlcard.models.leducholdem_rule_models import LeducHoldemRuleAgentV1
 from rlcard.utils.utils import set_global_seed, tournament
 from rlcard.utils.logger import Logger
 
@@ -28,7 +28,7 @@ memory_init_size = 1000
 train_every = 1
 
 # The paths for saving the logs and learning curves
-log_dir = './experiments/leduc_holdem_dqn_rules_result/'
+log_dir = './experiments/leduc_holdem_dqn_rule_based_result/'
 
 # Set a global seed
 set_global_seed(0)
@@ -48,7 +48,7 @@ with tf.Session() as sess:
     # random_agent = RandomAgent(action_num=eval_env.action_num)
     # TODO:: refer to rlcard/models/leducholdem_rule_models.py:6
     # rule_based_model = models.load('leduc-holdem-rule-v2')
-    rule_based_agent = LeducHoldemRuleAgentV2()
+    rule_based_agent = LeducHoldemRuleAgentV1()
     env.set_agents([agent, rule_based_agent])
     eval_env.set_agents([agent, rule_based_agent])
 
