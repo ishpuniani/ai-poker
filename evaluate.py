@@ -1,6 +1,8 @@
 """
 We will make the agents play against each other to compare performance of each
 """
+import collections
+import json
 
 import tensorflow as tf
 import os
@@ -93,6 +95,16 @@ def load_cfr_leduc_agent(model_path):
     return agent
 
 
+def eval_agents(agent1_name, agent1, agent2_name, agent2):
+    print('\n' + agent1_name + ' vs ' + agent2_name)
+    env = rlcard.make('leduc-holdem')
+    env.set_agents([agent1, agent2])
+    reward_1, reward_2 = tournament(env, evaluate_num)
+    print('Reward ' + agent1_name + ': ', reward_1)
+    print('Reward ' + agent2_name + ': ', reward_2)
+    return reward_1, reward_2
+
+
 # Evaluate the performance.
 # random_agent = RandomAgent(env.action_num)
 # nfsp_model_path = os.path.join(rlcard.__path__[0], 'models/pretrained/leduc_holdem_nfsp')
@@ -103,50 +115,45 @@ print("loaded NFSP leduc agent")
 dqn_agent = load_dqn_leduc_agent('models/leduc_holdem_dqn')
 print("loaded DQN leduc agent")
 
+dqn_agent_rb = load_dqn_leduc_agent('models/leduc_holdem_dqn_rule_based')
+print("loaded DQN RuleBased leduc agent")
+
 cfr_agent = load_cfr_leduc_agent('models/cfr_model')
 print("loaded CFR leduc agent")
+
+cfr_agent_rb = load_cfr_leduc_agent('models/cfr_rule_based_model')
+print("loaded CFR rule based leduc agent")
 
 rule_based_agent = models.load('leduc-holdem-rule-v1').rule_agents[0]
 print("loaded Leduc Rule Based Agent")
 
-print('\nNFSP vs RuleBased')
-env4 = rlcard.make('leduc-holdem')
-env4.set_agents([nfsp_agent, rule_based_agent])
-reward_nfsp, reward_rule_based = tournament(env4, evaluate_num)
-print('Reward NFSP: ', reward_nfsp)
-print('Reward RuleBased: ', reward_rule_based)
+random_agent = RandomAgent(action_num=env.action_num)
 
-print('\nDQN vs RuleBased')
-env5 = rlcard.make('leduc-holdem')
-env5.set_agents([dqn_agent, rule_based_agent])
-reward_dqn, reward_rule_based = tournament(env5, evaluate_num)
-print('Reward DQN: ', reward_dqn)
-print('Reward RuleBased: ', reward_rule_based)
+# agents = [nfsp_agent, dqn_agent, dqn_agent_rb, cfr_agent, cfr_agent_rb, random_agent, rule_based_agent]
+agents_dict = {
+    "nfsp_agent": nfsp_agent,
+    "dqn_agent": dqn_agent,
+    "dqn_agent_rb": dqn_agent_rb,
+    "cfr_agent": cfr_agent,
+    "cfr_agent_rb": cfr_agent_rb,
+    "random_agent": random_agent,
+    "rule_based_agent": rule_based_agent
+}
 
-print('\nCFR vs RuleBased')
-env6 = rlcard.make('leduc-holdem')
-env6.set_agents([cfr_agent, rule_based_agent])
-reward_cfr, reward_rule_based = tournament(env6, evaluate_num)
-print('Reward CFR: ', reward_cfr)
-print('Reward RuleBased: ', reward_rule_based)
+results_dict = collections.defaultdict(dict)
 
-print('\nNFSP vs DQN')
-env1 = rlcard.make('leduc-holdem')
-env1.set_agents([nfsp_agent, dqn_agent])
-reward_nfsp, reward_dqn = tournament(env1, evaluate_num)
-print('Reward NFSP: ', reward_nfsp)
-print('Reward DQN: ', reward_dqn)
+agent_names = list(agents_dict.keys())
 
-print('\nCFR vs DQN')
-env2 = rlcard.make('leduc-holdem')
-env2.set_agents([cfr_agent, dqn_agent])
-reward_cfr, reward_dqn = tournament(env2, evaluate_num)
-print('Reward CFR: ', reward_cfr)
-print('Reward DQN: ', reward_dqn)
+for i in range(len(agent_names)):
+    for j in range(i, len(agent_names)):
+        agent1_name = agent_names[i]
+        agent2_name = agent_names[j]
+        agent1 = agents_dict[agent1_name]
+        agent2 = agents_dict[agent2_name]
+        
+        rew1, rew2 = eval_agents(agent1_name, agent1, agent2_name, agent2)
+        results_dict[agent1_name][agent2_name] = rew1
+        results_dict[agent2_name][agent1_name] = rew2
 
-print('\nCFR vs NFSP')
-env3 = rlcard.make('leduc-holdem')
-env3.set_agents([cfr_agent, nfsp_agent])
-reward_cfr, reward_nfsp = tournament(env3, evaluate_num)
-print('Reward CFR: ', reward_cfr)
-print('Reward NFSP: ', reward_nfsp)
+with open('eval.json', 'w') as fp:
+    json.dump(results_dict, fp)
