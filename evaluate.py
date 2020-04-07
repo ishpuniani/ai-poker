@@ -131,13 +131,13 @@ random_agent = RandomAgent(action_num=env.action_num)
 
 # agents = [nfsp_agent, dqn_agent, dqn_agent_rb, cfr_agent, cfr_agent_rb, random_agent, rule_based_agent]
 agents_dict = {
-    "nfsp_agent": nfsp_agent,
-    "dqn_agent": dqn_agent,
-    "dqn_agent_rb": dqn_agent_rb,
-    "cfr_agent": cfr_agent,
-    "cfr_agent_rb": cfr_agent_rb,
-    "random_agent": random_agent,
-    "rule_based_agent": rule_based_agent
+    "NFSP": nfsp_agent,
+    "DQN": dqn_agent,
+    "DQN Rule Based": dqn_agent_rb,
+    "CFR": cfr_agent,
+    "CFR Rule Based": cfr_agent_rb,
+    "Random": random_agent,
+    "Rule Based": rule_based_agent
 }
 
 results_dict = collections.defaultdict(dict)
